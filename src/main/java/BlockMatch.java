@@ -23,9 +23,7 @@ public class BlockMatch {
         this.size = block.size();
     }
 
-    public int getNum(){
-        return this.num;
-    }
+    public int getNum() { return num; }
 
     public ArrayList<ArrayList<Integer>> BlockMatchByRules(){
         ArrayList<ArrayList<Integer>> matchRecord = new ArrayList<ArrayList<Integer>>();
@@ -33,38 +31,20 @@ public class BlockMatch {
         String[] tempa,tempb;
         HandleData handleData = new HandleData();
         double jaccardNum = 0;
+
         ArrayList<Integer> blockList = new ArrayList<Integer>(this.block);
 
-
-        double threshold = 0.3;
-        //暂定规则，工号，社保号，姓，名，街名，城市的Jaccard > 0.5
         for(int i=0;i<size;i++){
             tempa = oridata.get(blockList.get(i));
-
             tempRecord = new ArrayList<Integer>();
             tempRecord.add(blockList.get(i));
             for(int j=i+1;j<size;j++){
                 //System.out.println(i + " + " + j + "    " + blockList.get(i) + " + " + blockList.get(j));
-
                 tempb = oridata.get(blockList.get(j));
-                jaccardNum = handleData.Jaccard(tempa[3],tempb[3]);
-                if(jaccardNum < threshold)
-                    continue;
-
-                jaccardNum = handleData.Jaccard(tempa[5],tempb[5]);
-                if(jaccardNum < threshold)
-                    continue;
-
-                jaccardNum = handleData.Jaccard(tempa[7],tempb[7]);
-                if(jaccardNum < threshold)
-                    continue;
-
-                jaccardNum = handleData.Jaccard(tempa[9],tempb[9]);
-                if(jaccardNum < threshold)
-                    continue;
-
+                if (HandleData.checkSimilarity(tempa, tempb)) {
+                    tempRecord.add(blockList.get(j));
+                }
                 num++;
-                tempRecord.add(blockList.get(j));
             }
             if(tempRecord.size() > 1){
                 //System.out.print(blockList.get(i));
@@ -76,9 +56,4 @@ public class BlockMatch {
         return matchRecord;
 
     }
-
-
-
-
-
 }
