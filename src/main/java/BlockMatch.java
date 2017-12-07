@@ -23,6 +23,8 @@ public class BlockMatch {
         this.size = block.size();
     }
 
+    public int getNum() { return num; }
+
     public ArrayList<ArrayList<Integer>> BlockMatchByRules(){
         ArrayList<ArrayList<Integer>> matchRecord = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> tempRecord;
