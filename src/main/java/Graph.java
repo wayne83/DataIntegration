@@ -1,3 +1,4 @@
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
@@ -14,7 +15,6 @@ public class Graph {
     private ArrayList<String[]> oriData;
     private double totalEdgeWeight = 0;
     private int totalEdgeNum = 0;
-    private Log log = new Log("log");
 
     Graph(ArrayList<String[]> data){
         this.size = data.size();
@@ -92,6 +92,7 @@ public class Graph {
             graph.get(i).remove(j);
     }
 
+
     //根据分块选取的索引key值更新图
     public void BuildGraphByKey(int key){
 
@@ -106,11 +107,12 @@ public class Graph {
 
         Long parseTime = System.currentTimeMillis();
         for(String[] temp : oriData){
+
             //获取该条记录的id
             tempID = Integer.valueOf(temp[0]);
 
             num++;
-            if(num%100000 ==0 ){
+            if(num%1000000 ==0 ){
                 System.out.println("完成" + num + "条记录" + "  花费：" + String.valueOf(System.currentTimeMillis() - parseTime));
             }
 
@@ -119,8 +121,8 @@ public class Graph {
                 //遍历value中的实体，更新图
                 tempList = maps.get(temp[key]);
 
-                if(tempList.size() > 1000)
-                    System.out.println("tempList Size = " + tempList.size() );
+//                if(tempList.size() > 1000)
+//                    System.out.println("tempList Size = " + tempList.size() );
 
 
                 for(int id : tempList){
@@ -136,7 +138,6 @@ public class Graph {
             }
         }
     }
-
 
 
     //根据图找到连通子图
@@ -193,6 +194,81 @@ public class Graph {
                 hasVisit[i] = 1;
             }
         }
+
+
+        //        for(int i=0;i<graphSize;i++){
+//            if(hasVisit[i] == 0) {
+//                templist = new HashSet<Integer>();
+//                templist.add(graphMaps.get(i));
+//                queue.offer(i);
+//                while (!queue.isEmpty()) {
+//                    int j = queue.poll();
+//                    if (hasVisit[j] == 0) {
+//                        for (int m = j; m < graphSize; m++) {
+//                            if (ExistEdge( graphMaps.get(j), graphMaps.get(m) )) {
+//                                templist.add(graphMaps.get(m));
+//                                queue.offer(m);
+//                            }
+//                        }
+//                        hasVisit[j] = 1;
+//                    }
+//                }
+//
+//                if (templist.size() > 1) {
+//                    totalSize += templist.size();
+//                    if (num % 100000 == 0) {
+//                        System.out.println("templist长度为" + templist.size());
+//                        System.out.println("花费时间为：" + String.valueOf(System.currentTimeMillis() - parseTime));
+//                        parseTime = System.currentTimeMillis();
+//                    }
+//                    blockData.add(templist);
+//                }
+//                hasVisit[i] = 1;
+//            }
+
+
+//        for(int i=0;i<size;i++){
+//
+//            num ++ ;
+//
+//            //hasVisit[i] == 0表示没有访问
+//            if(hasVisit[i] == 0){
+//
+//                templist = new HashSet<Integer>();
+//                templist.add(i);
+//                queue.offer(i);
+//                while(!queue.isEmpty()){
+//                    int j = queue.poll();
+//
+//                    if(hasVisit[j] == 0){
+//                        for(int m=j;m<size;m++){
+//                            if( ExistEdge(j,m) ){
+//                                templist.add(m);
+//                                queue.offer(m);
+//                            }
+//                        }
+//                        hasVisit[j] = 1;
+//                    }
+//                }
+//
+//                if(templist.size() > 1){
+//                    totalSize += templist.size();
+//                    if(num%100000 == 0 ){
+//                        System.out.println("templist长度为" + templist.size());
+//                        System.out.println("花费时间为：" + String.valueOf( System.currentTimeMillis() - parseTime ) );
+//                        parseTime = System.currentTimeMillis();
+//                    }
+//                    //log.LogWriter("templist长度为" + templist.size() + "\n");
+//
+//                    blockData.add(templist);
+//                }
+//
+//                //表示该节点已经访问
+//                hasVisit[i] = 1;
+//            }
+
+//        }
+
         System.out.println("Finally FindConnectionGraph");
         System.out.println("总的个数为" + totalSize + "\n");
         return blockData;
@@ -202,20 +278,9 @@ public class Graph {
     public void CutGraphByAvg(){
         double graphMean  = 0;
 
-        //求所有边的平均值
-//        for(int i=0;i<size;i++){
-//            for(int j=i;j<size;j++){
-//                if( ExistEdge(i,j) ){
-//                    graphMean += GetEdgeWeight(i,j);
-//                    edgeNum++;
-//                }
-//            }
-//        }
-
         if(totalEdgeNum != 0){
             graphMean = totalEdgeWeight / totalEdgeNum ;
             System.out.print("图的平均值为：" + totalEdgeWeight + "/" + totalEdgeNum + " = " + graphMean + "\n");
-            //log.LogWriter("图的平均值为：" + totalEdgeWeight + "/" + totalEdgeNum + " = " + graphMean + "\n");
         }
 
         //遍历图，把所有边值小于平均值的边删除（权值变为0）
@@ -273,9 +338,12 @@ public class Graph {
 
     //调用
     public ArrayList<HashSet<Integer>> PipeLine(int[] keyArr){
+        /*
         for(int key:keyArr){
             this.BuildGraphByKey(key);
-        }
+        }*/
+
+
         this.CutGraphByAvg();
         //this.CutGraphByWNP();
         return FindConnectionGraph();
@@ -284,3 +352,4 @@ public class Graph {
 
 
 }
+

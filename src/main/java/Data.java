@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.lang.ThreadGroup;
 
-import static javafx.scene.input.KeyCode.T;
 
 
 /**
@@ -14,8 +14,8 @@ public class Data {
 
     private String fileName = "data/final_out.csv";
     private int totalNum = 100;
-    private Log log = new Log("log");
     private ArrayList<String[]> data = new ArrayList<String[]>();
+    private int num = 0;
 
     Data(){
 
@@ -45,6 +45,7 @@ public class Data {
                     num++;
                     //处理数据
                     tempData = line.split(",");
+                    tempData[0] = String.valueOf( num-1 );
                     data.add(tempData);
                 }
             }
@@ -54,6 +55,63 @@ public class Data {
         System.out.println("读取" + num + "条数据花费时间：" + String.valueOf( System.currentTimeMillis() - startTime) );
         //log.LogWriter("读取" + num + "条数据花费时间：" + String.valueOf( System.currentTimeMillis() - startTime) + "\n" );
 
+        return data;
+    }
+
+
+    public ArrayList<String[]> ReadDataByNewThread() {
+        try {
+            File filename = new File(fileName);
+            ExecutorService executor = Executors.newFixedThreadPool(24);
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(filename));
+            //BufferedReader是线程安全的，可以多线程读取
+            BufferedReader br = new BufferedReader(reader);
+
+            Long startTime = System.currentTimeMillis();
+            ThreadGroup threadGroup = new ThreadGroup("readData");
+            for (int i = 0; i < 24; i++) {
+                Thread thread = new Thread(new Thread(() -> {
+                    try {
+                        while (true) {
+                            synchronized (this) {
+                                String line = br.readLine();
+                                if (line == null ) break;
+                                if(this.num >= totalNum ) break;
+                                this.num++;
+                                this.data.add(line.split(","));
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }));
+                executor.execute(thread);
+            }
+            executor.shutdown();
+            while(!executor.isTerminated());
+
+            System.out.println(data.size());
+            System.out.println("读取" + num + "条数据花费时间：" + String.valueOf( System.currentTimeMillis() - startTime) );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.data;
+    }
+
+
+    //多线程读取数据
+    public ArrayList<String[]> ReadDataByBufferThread(){
+
+        ArrayList<String[]> data = new ArrayList<>();
+        try{
+            File filename = new File(fileName);
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(fileName));
+            BufferedReader br = new BufferedReader(reader);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return data;
     }
 
@@ -98,7 +156,6 @@ public class Data {
 
         return this.data;
     }
-
 
     public void UpdateData(String[] temp){
         synchronized (this){
@@ -175,8 +232,6 @@ public class Data {
                 dir.mkdir();
             }
 
-
-            int writeNum = 0;
             //写入文件
             BufferedWriter writer = new BufferedWriter(new FileWriter(writerFileName));
             for(ArrayList<Integer> record: matchRecord){
@@ -184,13 +239,11 @@ public class Data {
                 for(int index:record){
                     for(String str:oridata.get(index)){
                         writer.write(str + ",");
-                        writeNum++;
                     }
                     writer.write("\n");
                 }
             }
             writer.close();
-            System.out.println("结果写入" + writeNum + "条结果");
         }catch (Exception ex){
             ex.printStackTrace();
         }

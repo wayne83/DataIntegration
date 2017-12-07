@@ -10,9 +10,11 @@ public class BlockMatch {
 
     private HashSet<Integer> block;
     private ArrayList<String[]> oridata;
+    private int num;
     private int size;
 
     BlockMatch(ArrayList<String[]> oridata){
+        this.num = 0;
         this.oridata = oridata;
     }
 
@@ -40,9 +42,11 @@ public class BlockMatch {
                 if (HandleData.checkSimilarity(tempa, tempb)) {
                     tempRecord.add(blockList.get(j));
                 }
+                num++;
             }
             if(tempRecord.size() > 1){
                 //System.out.print(blockList.get(i));
+                num++;
                 matchRecord.add(tempRecord);
             }
         }
