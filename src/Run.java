@@ -51,7 +51,7 @@ public class Run {
         System.out.println("总共运行花费时间为：" + String.valueOf( System.currentTimeMillis() - alltime ));
         System.out.println("将结果写入文件,数目为：" + blockMatch.getNum());
 
-        dataClass.writeToFile("output/result.txt",matchRecord,oridata);
+        dataClass.writeToFile("output/result_index.txt",matchRecord,oridata);
 
     }
 }

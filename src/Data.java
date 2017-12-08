@@ -235,13 +235,20 @@ public class Data {
             //写入文件
             BufferedWriter writer = new BufferedWriter(new FileWriter(writerFileName));
             for(ArrayList<Integer> record: matchRecord){
-                writer.write("-------------\n");
+                //打印全部
+//                writer.write("-------------\n");
+//                for(int index:record){
+//                    for(String str:oridata.get(index)){
+//                        writer.write(str + ",");
+//                    }
+//                    writer.write("\n");
+//                }
+
+                //打印id
                 for(int index:record){
-                    for(String str:oridata.get(index)){
-                        writer.write(str + ",");
-                    }
-                    writer.write("\n");
+                    writer.write(oridata.get(index)[0] + ",");
                 }
+                writer.write("\n");
             }
             writer.close();
         }catch (Exception ex){

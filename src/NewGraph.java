@@ -131,7 +131,7 @@ public class NewGraph {
                     //graph[tempID][id] += 1;
                     //graph[id][tempID] += 1;
                     UpdateGraph(id,tempID);
-                    //UpdateGraph(tempID,id);
+                    UpdateGraph(tempID,id);
                 }
                 maps.get(key).add(tempID);
             }else{
@@ -180,7 +180,7 @@ public class NewGraph {
                     //graph[tempID][id] += 1;
                     //graph[id][tempID] += 1;
                     UpdateGraph(id,tempID);
-                    //UpdateGraph(tempID,id);
+                    UpdateGraph(tempID,id);
                 }
                 maps.get(temp[key]).add(tempID);
             }else{
@@ -235,17 +235,22 @@ public class NewGraph {
                 queue.offer(graphMaps.get(i));
                 while(!queue.isEmpty()){
                     int j= queue.poll();
+                    //System.out.print("*"+j + " ");
                     if(!hasVisit.contains(j)){
                         if (this.graph.containsKey(j)){
                             Iterator<Map.Entry<Integer,Integer>> nodesIterator = this.graph.get(j).entrySet().iterator();
                             while (nodesIterator.hasNext()){
                                 Map.Entry<Integer,Integer> nodes = nodesIterator.next();
-                                templist.add(nodes.getKey());
-                                queue.offer(nodes.getKey());
+                                if(!hasVisit.contains(nodes.getKey())){
+                                    templist.add(nodes.getKey());
+                                    queue.offer(nodes.getKey());
+                                    //System.out.print(nodes.getKey() + " ");
+                                }
+
                             }
                         }
-                        hasVisit.add(j);
                     }
+                    hasVisit.add(j);
                 }
 
                 if (templist.size() > 1) {
@@ -266,7 +271,7 @@ public class NewGraph {
 
         //打印Block块
 //        for(HashSet<Integer> set : blockData){
-//            System.out.println("Block大小为：" + set.size());
+//            //System.out.println("Block大小为：" + set.size());
 //            for(Integer i:set){
 //                System.out.print(i + " " );
 //            }
@@ -286,6 +291,7 @@ public class NewGraph {
             System.out.print("图的平均值为：" + totalEdgeWeight + "/" + totalEdgeNum + " = " + graphMean + "\n");
         }
 
+        //graphMean = 3;
         ArrayList<Integer> graphMaps = new ArrayList<>();
 
         //遍历图，把所有边值小于平均值的边删除（权值变为0）
@@ -323,27 +329,28 @@ public class NewGraph {
 
     //调用
     public ArrayList<HashSet<Integer>> PipeLine(int[] KeyArr){
+
 //        for(int i=0;i<KeyArr.length;i++){
 //            this.BuildGraphByKey(KeyArr[i]);
 //        }
-        this.BuildGraphByKey(3,6);
-        this.BuildGraphByKey(3,9);
-        this.BuildGraphByKey(2,3);
-        this.BuildGraphByKey(2,5);
 
+        this.BuildGraphByKey(2);
+
+        this.BuildGraphByKey(3,5);
+        //this.BuildGraphByKey(3,9);
+        this.BuildGraphByKey(3,11);
         //this.BuildGraphByKey(3,10);
 
         this.BuildGraphByKey(5,6);
-        this.BuildGraphByKey(5,9);
-
+        //this.BuildGraphByKey(5,9);
+        this.BuildGraphByKey(5,11);
         //this.BuildGraphByKey(5,10);
 
         this.BuildGraphByKey(6,7);
+
         this.BuildGraphByKey(7,8);
         this.BuildGraphByKey(7,9);
-
         //this.BuildGraphByKey(7,10);
-
         this.BuildGraphByKey(7,11);
 
         this.findGraphNum();
