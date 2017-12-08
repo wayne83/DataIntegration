@@ -9,7 +9,7 @@ import java.util.Set;
 public class HandleData {
 
     private static int windows = 2;
-    private static final double RECORD_SIM_THRESHOLD = 1.2;
+    private static final double RECORD_SIM_THRESHOLD = 1.14;
 
     public static double Jaccard(String s1,String s2){
 
@@ -266,7 +266,7 @@ public class HandleData {
             }
         }
         z /= (12.0 - skipNum);
-        System.out.println("Similarity = " + String.valueOf(z));
+//        System.out.println("Similarity = " + String.valueOf(z));
         return z >= RECORD_SIM_THRESHOLD;
     }
 

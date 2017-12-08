@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 
@@ -10,6 +11,7 @@ public class BlockMatch {
 
     private HashSet<Integer> block;
     private ArrayList<String[]> oridata;
+    HashMap<Integer, Integer> father = new HashMap<>();
     private int num;
     private int size;
 
@@ -25,6 +27,14 @@ public class BlockMatch {
 
     public int getNum() { return num; }
 
+    public int getFather(int x) {
+        if (x == father.get(x)) {
+            return x;
+        }
+        father.put(x, getFather(father.get(x)));
+        return father.get(x);
+    }
+
     public ArrayList<ArrayList<Integer>> BlockMatchByRules(){
         ArrayList<ArrayList<Integer>> matchRecord = new ArrayList<ArrayList<Integer>>();
         ArrayList<Integer> tempRecord;
@@ -34,22 +44,46 @@ public class BlockMatch {
 
         ArrayList<Integer> blockList = new ArrayList<Integer>(this.block);
 
+        // 初始化并查集的父亲集合
+        for (int i = 0; i < size; ++i) {
+            father.put(i, i);
+        }
+
         for(int i=0;i<size;i++){
             tempa = oridata.get(blockList.get(i));
-            tempRecord = new ArrayList<Integer>();
-            tempRecord.add(blockList.get(i));
+
+            if (tempa[3].equals("Karilynn")) {
+                int ok = 1;
+            }
+
             for(int j=i+1;j<size;j++){
                 //System.out.println(i + " + " + j + "    " + blockList.get(i) + " + " + blockList.get(j));
                 tempb = oridata.get(blockList.get(j));
-                if (HandleData.checkSimilarity(tempa, tempb)) {
-                    tempRecord.add(blockList.get(j));
+                if (getFather(i) != getFather(j)) {
+                    if (HandleData.checkSimilarity(tempa, tempb)) {
+                        father.put(i, father.get(j));
+                    }
                 }
-                num++;
             }
-            if(tempRecord.size() > 1){
-                //System.out.print(blockList.get(i));
-                num++;
-                matchRecord.add(tempRecord);
+        }
+        HashMap<Integer, ArrayList<Integer>> groups = new HashMap<>();
+        for (int i = 0; i < size; ++i) {
+            int key = getFather(i);
+            ArrayList<Integer> group;
+            if (!groups.containsKey(key)) {
+                group = new ArrayList<>();
+            }
+            else {
+                group = groups.get(key);
+            }
+            group.add(blockList.get(i));
+            groups.put(key, group);
+        }
+
+        for (ArrayList<Integer> group: groups.values()) {
+            matchRecord.add(group);
+            if (group.size() > 1) {
+                num += group.size();
             }
         }
 

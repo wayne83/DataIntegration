@@ -212,7 +212,7 @@ public class NewGraph {
         System.out.println("Start FindConnectionGraph");
 
         int graphSize = graphMaps.size();
-        HashSet<Integer> hasVisit = new HashSet<>();
+        HashSet<Integer> hasVisit = new HashSet<Integer>();
         //int[] hasVisit = new int[graphSize];
 
         ArrayList<HashSet<Integer>> blockData = new ArrayList<HashSet<Integer>>();
@@ -240,8 +240,10 @@ public class NewGraph {
                             Iterator<Map.Entry<Integer,Integer>> nodesIterator = this.graph.get(j).entrySet().iterator();
                             while (nodesIterator.hasNext()){
                                 Map.Entry<Integer,Integer> nodes = nodesIterator.next();
-                                templist.add(nodes.getKey());
-                                queue.offer(nodes.getKey());
+                                if(!hasVisit.contains(nodes.getKey())){
+                                    templist.add(nodes.getKey());
+                                    queue.offer(nodes.getKey());
+                                }
                             }
                         }
                         hasVisit.add(j);
@@ -286,7 +288,7 @@ public class NewGraph {
             System.out.print("图的平均值为：" + totalEdgeWeight + "/" + totalEdgeNum + " = " + graphMean + "\n");
         }
 
-        ArrayList<Integer> graphMaps = new ArrayList<>();
+        ArrayList<Integer> graphMaps = new ArrayList<Integer>();
 
         //遍历图，把所有边值小于平均值的边删除（权值变为0）
         //使用Iterator遍历
@@ -347,7 +349,7 @@ public class NewGraph {
         this.BuildGraphByKey(7,11);
 
         this.findGraphNum();
-        ArrayList<Integer> graphMaps = new ArrayList<>();
+        ArrayList<Integer> graphMaps = new ArrayList<Integer>();
         graphMaps = this.CutGraphByAvg();
         this.findGraphNum();
         //this.CutGraphByWNP();
